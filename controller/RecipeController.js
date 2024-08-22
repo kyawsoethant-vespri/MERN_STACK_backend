@@ -1,25 +1,34 @@
 const Recipe = require("../models/Recipe");
 
 const RecipeController = {
-  index: (req, res) => {
-    return res.json({ msg: "Get all recipes" });
+  getAllRecipes: async (req, res) => {
+    const recipes = await Recipe.find().sort({ createdAt: -1 });
+    return res.status(200).json(recipes);
   },
-  store: async (req, res) => {
+
+  createRecipes: async (req, res) => {
     const { title, description, ingredients } = req.body;
-    const recipe = await Recipe.create({
-      title,
-      description,
-      ingredients,
-    });
-    return res.json(recipe);
+    try {
+      const recipe = await Recipe.create({
+        title,
+        description,
+        ingredients,
+      });
+      return res.status(200).json(recipe);
+    } catch (error) {
+      return res.status(400).json({ msg: "Invalid Fields." });
+    }
   },
-  show: (req, res) => {
+
+  getSingleRecipe: (req, res) => {
     return res.json({ msg: "Get single recipe" });
   },
-  destory: (req, res) => {
+
+  deleteRecipe: (req, res) => {
     return res.json({ msg: "delete recipe" });
   },
-  update: (req, res) => {
+
+  updateRecipe: (req, res) => {
     return res.json({ msg: "Update recipe" });
   },
 };
