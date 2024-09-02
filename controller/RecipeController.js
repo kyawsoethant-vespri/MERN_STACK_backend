@@ -1,4 +1,5 @@
 const Recipe = require("../models/Recipe");
+const mongoose = require("mongoose");
 
 const RecipeController = {
   getAllRecipes: async (req, res) => {
@@ -21,27 +22,64 @@ const RecipeController = {
   },
 
   getSingleRecipe: async (req, res) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ msg: "Not a valid id" });
+    }
+
     try {
-      const id = req.params.id;
       const recipe = await Recipe.findById(id);
+      if (!recipe) {
+        return res.status(404).json({ msg: "recipe not found." });
+      }
+
       return res.json(recipe);
     } catch (error) {
-      return res.status(404).json({ msg: "Recipe not found." });
+      return res.status(500).json({ msg: "Internet server error." });
     }
   },
 
   deleteRecipe: async (req, res) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ msg: "Not a valid id." });
+    }
+
     try {
-      const id = req.params.id;
       const recipe = await Recipe.findByIdAndDelete(id);
+      if (!recipe) {
+        return res.status(404).json({ msg: "recipe not found." });
+      }
+
       return res.json(recipe);
     } catch (error) {
-      return res.status(400).json({ msg: "Can't Delete this data" });
+      return res.status(400).json({ msg: "Internet server error." });
     }
   },
 
-  updateRecipe: (req, res) => {
-    return res.json({ msg: "Update recipe" });
+  updateRecipe: async (req, res) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ msg: "Not a valid id." });
+    }
+
+    try {
+      const recipe = await Recipe.findByIdAndUpdate(
+        id,
+        { ...req.body },
+        { new: true }
+      );
+      if (!recipe) {
+        return res.status(404).json({ msg: "recipe not found." });
+      }
+
+      return res.json(recipe);
+    } catch (error) {
+      return res.status(400).json({ msg: "Internet server error." });
+    }
   },
 };
 

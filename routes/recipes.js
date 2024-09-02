@@ -26,20 +26,6 @@ router.get("/:id", RecipeController.getSingleRecipe);
 
 router.delete("/:id", RecipeController.deleteRecipe);
 
-router.patch(
-  "/:id",
-  [
-    body("title").notEmpty().withMessage("Title is a required field"),
-    body("description")
-      .notEmpty()
-      .withMessage("Description is a required field."),
-    body("ingredients")
-      .notEmpty()
-      .isArray({ min: 3 })
-      .withMessage("Ingredients are required field."),
-  ],
-  handleErrorMessage,
-  RecipeController.updateRecipe
-);
+router.patch("/:id", RecipeController.updateRecipe);
 
 module.exports = router;
