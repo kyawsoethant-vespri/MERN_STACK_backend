@@ -3,7 +3,7 @@ const Recipe = require("../models/Recipe");
 const RecipeController = {
   getAllRecipes: async (req, res) => {
     const recipes = await Recipe.find().sort({ createdAt: -1 });
-    return res.status(200).json(recipes);
+    return res.json(recipes);
   },
 
   createRecipes: async (req, res) => {
@@ -14,18 +14,30 @@ const RecipeController = {
         description,
         ingredients,
       });
-      return res.status(200).json(recipe);
+      return res.json(recipe);
     } catch (error) {
       return res.status(400).json({ msg: "Invalid Fields." });
     }
   },
 
-  getSingleRecipe: (req, res) => {
-    return res.json({ msg: "Get single recipe" });
+  getSingleRecipe: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const recipe = await Recipe.findById(id);
+      return res.json(recipe);
+    } catch (error) {
+      return res.status(404).json({ msg: "Recipe not found." });
+    }
   },
 
-  deleteRecipe: (req, res) => {
-    return res.json({ msg: "delete recipe" });
+  deleteRecipe: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const recipe = await Recipe.findByIdAndDelete(id);
+      return res.json(recipe);
+    } catch (error) {
+      return res.status(400).json({ msg: "Can't Delete this data" });
+    }
   },
 
   updateRecipe: (req, res) => {
