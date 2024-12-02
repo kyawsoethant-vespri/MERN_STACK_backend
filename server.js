@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 require("dotenv").config();
 
 const morgan = require("morgan");
@@ -14,6 +15,8 @@ mongoose.connect(URL).then(() => {
     console.log("app is running on localhost : " + process.env.PORT);
   });
 });
+
+app.use(cors()); // for local development
 
 app.use(express.json());
 
