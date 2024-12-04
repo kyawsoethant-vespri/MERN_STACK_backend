@@ -16,11 +16,11 @@ const RecipeController = {
         // console.log("totalRecipesCount : ", totalRecipesCount-);
 
         const totalPagesCount = Math.ceil(totalRecipesCount / limit);
-        // console.log("totalPagesCount", totalPagesCount);
+        // console.log("totalPagesCount", totalPagesCount;
 
         const links = {
-            nextPage: totalPagesCount !== page,
-            previousPage: page !== 1,
+            nextPage: totalPagesCount == page ? false : true,
+            previousPage: page == 1 ? false : true,
             currentPage: page,
             loopableLinks: [],
         };
@@ -28,7 +28,7 @@ const RecipeController = {
         // console.log("links.previousPage", links.previousPage);
         // console.log("link.nextPage", links.nextPage);
 
-        //generate monopolizable array
+        //generate loop able Links array
         for (let index = 0; index < totalPagesCount; index++) {
             const number = index + 1;
             links.loopableLinks.push({number});
