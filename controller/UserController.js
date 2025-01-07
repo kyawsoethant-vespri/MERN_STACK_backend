@@ -2,8 +2,19 @@ const User = require("../models/User");
 const createToken = require("../helpers/createToken");
 
 const UserController = {
-    login: (req, res) => {
-        return res.json({msg: "User login api working"});
+    login: async (req, res) => {
+        try {
+            const {email, password} = req.body;
+            const user = await User.login(email, password);
+
+            // createToken
+            const token = await createToken(user._id);
+            res.cookie('jwt', token, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000});
+            return res.json({user, token});
+        } catch (e) {
+            return res.status(400).json({error: e.message});
+        }
+
     },
 
     //User Register

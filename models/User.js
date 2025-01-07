@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
+const bycrypt = require("bcrypt");
 
 const UserSchema = new Schema({
     name: {
@@ -34,5 +35,19 @@ UserSchema.statics.register = async function (name, email, password) {
     });
     return user;
 };
+
+UserSchema.statics.login = async function (email, password) {
+    const user = await this.findOne({email});
+    if (!user) {
+        throw new Error("User does not exist");
+    }
+
+    const isCorrect = await bycrypt.compare(password, user.password);
+    if (!isCorrect) {
+        throw new Error("Password is incorrect");
+    }
+    return user;
+};
+
 
 module.exports = mongoose.model("User", UserSchema);
