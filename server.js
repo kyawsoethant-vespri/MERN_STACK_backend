@@ -2,12 +2,12 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-
 const morgan = require("morgan");
 const recipesRoutes = require("./routes/recipes");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/users");
 const cookieParser = require("cookie-parser");
+const AuthMiddleware = require("./middlewares/AuthMiddleware");
 
 //mongoose connection
 const URL = process.env.MONGO_URL;
@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 });
 
 //api routes
-app.use("/api/recipes", recipesRoutes);
+app.use("/api/recipes", AuthMiddleware, recipesRoutes);
 
 //api users
 app.use("/api/users", userRoutes);
