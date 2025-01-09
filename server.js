@@ -21,7 +21,7 @@ mongoose.connect(URL).then(() => {
 app.use(cors({
     origin: "http://localhost:5173",
     credentials: true,
-})); // for local development
+})); //for local development
 
 app.use(express.json());
 
