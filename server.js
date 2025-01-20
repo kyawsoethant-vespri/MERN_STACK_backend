@@ -24,6 +24,7 @@ app.use(cors({
 })); //for local development
 
 app.use(express.json());
+app.use(express.static('public'))
 
 app.use(morgan("dev"));
 

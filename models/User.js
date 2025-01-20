@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
-const bycrypt = require("bcrypt");
 
 const UserSchema = new Schema({
     name: {
@@ -42,7 +41,7 @@ UserSchema.statics.login = async function (email, password) {
         throw new Error("User does not exist");
     }
 
-    const isCorrect = await bycrypt.compare(password, user.password);
+    const isCorrect = await bcrypt.compare(password, user.password);
     if (!isCorrect) {
         throw new Error("Password is incorrect");
     }
