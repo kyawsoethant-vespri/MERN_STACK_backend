@@ -5,6 +5,11 @@ const handleErrorMessage = require("../middlewares/handleErrorMessage");
 const User = require("../models/User");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const authMiddleware = require("../middlewares/authMiddleware");
+
+router.get("/me", authMiddleware,
+    UserController.me
+)
 
 router.post("/login", [
         body("email")

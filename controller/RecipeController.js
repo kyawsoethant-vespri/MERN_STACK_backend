@@ -1,9 +1,10 @@
 const Recipe = require("../models/Recipe");
 const mongoose = require("mongoose");
+const removeFile = require("../helpers/removeFile");
 
 const RecipeController = {
     getAllRecipes: async (req, res) => {
-        const limit = 4;
+        const limit = 6;
         const page = req.query.page || 1;
         console.log(page);
 
@@ -90,34 +91,54 @@ const RecipeController = {
                 return res.status(404).json({msg: "recipe not found."});
             }
 
+            let path = __dirname + "/../public" + recipe.Photo
+            await removeFile(path);
+
             return res.json(recipe);
         } catch (error) {
-            return res.status(400).json({msg: "Internet server error."});
+            return res.status(500).json({msg: "Internet server error."});
         }
     },
 
     updateRecipe: async (req, res) => {
-        const {id} = req.params;
-
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({msg: "Not a valid id."});
-        }
-
         try {
-            const recipe = await Recipe.findByIdAndUpdate(
-                id,
-                {...req.body},
-                {new: true}
-            );
-            if (!recipe) {
-                return res.status(404).json({msg: "recipe not found."});
+            let id = req.params.id;
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return res.status(400).json({msg: 'not a valid id'});
             }
+            let recipe = await Recipe.findByIdAndUpdate(id, {
+                ...req.body // title : "updated title value"
+            });
 
+
+            let path = __dirname + "/../public" + recipe.Photo
+            await removeFile(path);
+
+            if (!recipe) {
+                return res.status(404).json({msg: 'recipe not found'});
+            }
             return res.json(recipe);
-        } catch (error) {
-            return res.status(400).json({msg: "Internet server error."});
+        } catch (e) {
+            return res.status(500).json({msg: 'internet server error'});
         }
     },
+
+    fileUpload: async (req, res) => {
+        try {
+            const {id} = req.params;
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return res.status(400).json({msg: "Not a valid id."});
+            }
+            const fileUpload = await Recipe.findByIdAndUpdate(id, {Photo: '/' + req.file.filename})
+            if (!fileUpload) {
+                return res.status(404).json({msg: "recipe not found."});
+            }
+            return res.json(fileUpload);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({msg: "Internet server error."});
+        }
+    }
 };
 
 module.exports = RecipeController;

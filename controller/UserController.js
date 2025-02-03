@@ -3,6 +3,10 @@ const createToken = require("../helpers/createToken");
 const {token} = require("morgan");
 
 const UserController = {
+    me: async (req, res) => {
+        return res.json(req.user);
+    },
+
     //user Login
     login: async (req, res) => {
         try {
